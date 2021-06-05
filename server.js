@@ -35,20 +35,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Have Node serve the files for our built React app
-app.use(express.static(path.resolve(__dirname, "client/build")));
-
 // Variables
 var sheetId = "";
 var userEmail = "";
 var classTitle = "";
 
 // Handle GET requests
-// All other GET requests not handled before will return our React app
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "client/build", "index.html"));
-});
-
 // Classes.js Component
 app.get("/drive/api", async (req, res) => {
   try {
@@ -142,6 +134,10 @@ app.post("/drive/email", async (req, res) => {
     console.log(error);
   }
 });
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+}
 
 // Listen
 app.listen(PORT, () => {
