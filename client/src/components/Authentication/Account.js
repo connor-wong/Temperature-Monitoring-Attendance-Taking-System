@@ -1,6 +1,6 @@
 import React, { createContext, useState } from "react";
 import { CognitoUser, AuthenticationDetails } from "amazon-cognito-identity-js";
-import Pool from "../../UserPool";
+import Pool from "./UserPool";
 import axios from "axios";
 
 const AccountContext = createContext();
