@@ -30,9 +30,9 @@ const SelectedAttendance = (props) => {
 
   // AWS DynamoDB Config
   AWS.config.update({
-    region: AWS_DEFAULT_REGION,
-    accessKeyId: AWS_ACCESS_KEY_ID,
-    secretAccessKey: AWS_SECRET_ACCESS_KEY,
+    region: "ap-southeast-1",
+    accessKeyId: "AKIAVT4QMHKTJR6VFAEN",
+    secretAccessKey: "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",
   });
 
   const dynamodbClient = new AWS.DynamoDB.DocumentClient();

@@ -27,9 +27,9 @@ const googleSheets = google.sheets({ version: "v4", auth: client });
 
 // AWS Configuration
 AWS.config.update({
-  region: process.env.AWS_DEFAULT_REGION,
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: "ap-southeast-1",
+  accessKeyId: "AKIAVT4QMHKTJR6VFAEN",
+  secretAccessKey: "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",
 });
 
 const dynamodbClient = new AWS.DynamoDB.DocumentClient();
