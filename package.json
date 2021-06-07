@@ -4,12 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "client": "cd client && npm start",
-    "build": "cd client && npm install && npm run build",
-    "install-client": "cd client && npm install",
-    "dev": "concurrently \"npm run client\" \"nodemon server.js\"",
-    "start": "node server.js",
-    "heroku-postbuild": "npm run install-client && npm run build"
+    "heroku-postbuild": "cd client && npm install & npm install --only=dev --no-shrinkwrap && npm run build",
+    "dev": "concurrently \"cd client && npm start\" \"nodemon server.js\"",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",

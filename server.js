@@ -1,10 +1,18 @@
 // server/index.js
 const express = require("express");
+const app = express();
 const path = require("path");
 const cors = require("cors");
 const { google } = require("googleapis");
 const AWS = require("aws-sdk");
 require("dotenv").config();
+
+const PORT = process.env.PORT || 8000;
+
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "client", "build")));
 
 // Google Configuration
 const auth = new google.auth.GoogleAuth({
@@ -26,15 +34,6 @@ AWS.config.update({
 
 const dynamodbClient = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME = "March";
-
-const PORT = process.env.PORT || 8000;
-
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, "client", "build")));
 
 // Variables
 var sheetId = "";
