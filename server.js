@@ -6,13 +6,22 @@ const cors = require("cors");
 const { google } = require("googleapis");
 const AWS = require("aws-sdk");
 require("dotenv").config();
+const bodyParser = require("body-parser");
+const webpush = require("web-push");
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8000; // default port to listen
 
 app.use(cors());
+app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "client", "build")));
+
+webpush.setVapidDetails(
+  "mailto: contact@my-site.com",
+  "BDwtsxZpmUHSnFq5VViqOGkrcZLO2HxeSZPdVyA3upYBhVghSJMNkiZX5KFX5KnrheGyLCAX8-Lh1OtLaEGWNbI",
+  "dRog_7D0fmi-fMHyT9hqFQ81VZbj_PCQr7P3n0St5DY"
+);
 
 // Google Configuration
 const auth = new google.auth.GoogleAuth({
@@ -112,6 +121,7 @@ app.get("/aws/api", async (req, res) => {
   }
 });
 
+// Handle POST requests
 app.post("/sheet/class", async (req, res) => {
   try {
     const data = await Object.keys(req.body);
@@ -123,7 +133,6 @@ app.post("/sheet/class", async (req, res) => {
   }
 });
 
-// Handle POST requests
 app.post("/drive/email", async (req, res) => {
   try {
     const data = await Object.keys(req.body);
@@ -133,6 +142,22 @@ app.post("/drive/email", async (req, res) => {
   } catch (error) {
     console.log(error);
   }
+});
+
+app.post("/notifications/subscribe", (req, res) => {
+  const subscription = req.body;
+
+  const payload = JSON.stringify({
+    title: "Hello!",
+    body: "It works.",
+  });
+
+  webpush
+    .sendNotification(subscription, payload)
+    .then((result) => console.log(result))
+    .catch((e) => console.log(e.stack));
+
+  res.status(200).json({ success: true });
 });
 
 app.get("*", (req, res) => {

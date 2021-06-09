@@ -25,9 +25,6 @@ const SelectedAttendance = (props) => {
   const [removeStudents, setRemoveStudents] = useState([]);
   const [addStudents, setAddStudents] = useState([]);
 
-  const { AWS_DEFAULT_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } =
-    process.env;
-
   // AWS DynamoDB Config
   AWS.config.update({
     region: "ap-southeast-1",

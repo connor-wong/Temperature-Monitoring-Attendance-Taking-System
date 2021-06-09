@@ -4,7 +4,8 @@ import "./App.css";
 import App from "./App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Account } from "./components/Authentication/Account";
-import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+import * as serviceWorker from "./serviceWorker";
+import { subscribeUser } from "./subscription";
 
 ReactDOM.render(
   <Account>
@@ -17,4 +18,6 @@ ReactDOM.render(
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorkerRegistration.register();
+serviceWorker.register();
+
+subscribeUser();
