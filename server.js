@@ -48,6 +48,7 @@ const TABLE_NAME = "March";
 var sheetId = "";
 var userEmail = "";
 var classTitle = "";
+var subscription = "";
 
 // Handle GET requests
 // Classes.js Component
@@ -121,6 +122,18 @@ app.get("/aws/api", async (req, res) => {
   }
 });
 
+app.get("/notifications/push", (req, res) => {
+  const payload = JSON.stringify({
+    title: "Hello!",
+    body: "It works.",
+  });
+
+  webpush
+    .sendNotification(subscription, payload)
+    .then((result) => console.log(result))
+    .catch((e) => console.log(e.stack));
+});
+
 // Handle POST requests
 app.post("/sheet/class", async (req, res) => {
   try {
@@ -145,17 +158,7 @@ app.post("/drive/email", async (req, res) => {
 });
 
 app.post("/notifications/subscribe", (req, res) => {
-  const subscription = req.body;
-
-  const payload = JSON.stringify({
-    title: "Hello!",
-    body: "It works.",
-  });
-
-  webpush
-    .sendNotification(subscription, payload)
-    .then((result) => console.log(result))
-    .catch((e) => console.log(e.stack));
+  subscription = req.body;
 
   res.status(200).json({ success: true });
 });

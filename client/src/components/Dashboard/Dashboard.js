@@ -26,6 +26,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (updateData) {
       getData();
+      fetch("/notifications/push");
     }
   }, [updateData]);
 
