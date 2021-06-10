@@ -4,7 +4,7 @@ import "./App.css";
 import App from "./App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Account } from "./components/Authentication/Account";
-import * as serviceWorker from "./serviceWorker";
+import * as serviceWorker from "./serviceWorkerRegistration";
 import { subscribeUser } from "./subscription";
 
 ReactDOM.render(
