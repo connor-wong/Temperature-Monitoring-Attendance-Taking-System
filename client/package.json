@@ -6,7 +6,6 @@
     "amazon-cognito-identity-js": "^4.6.0",
     "aws-sdk": "^2.912.0",
     "bootstrap": "^4.6.0",
-    "cra-append-sw": "^2.7.0",
     "react": "^17.0.1",
     "react-bootstrap": "^1.5.2",
     "react-dom": "^17.0.1",
