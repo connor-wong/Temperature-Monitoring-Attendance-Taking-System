@@ -63,7 +63,7 @@ export function subscribeUser() {
                   }
                 });
             } else {
-              //console.log("Existed subscription detected.");
+              console.log("Existed subscription detected.");
               sendSubscription(existedSubscription);
             }
           });
