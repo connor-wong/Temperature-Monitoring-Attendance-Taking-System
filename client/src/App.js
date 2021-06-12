@@ -15,7 +15,7 @@ const App = () => {
         setLoggedIn(true);
       }, 1500);
     });
-  });
+  }, []);
 
   return <>{loggedIn ? <Dashboard /> : <Login />}</>;
 };

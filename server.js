@@ -19,7 +19,7 @@ app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname, "client", "build")));
 
 webpush.setVapidDetails(
-  "mailto: contact@my-site.com",
+  "mailto: s10197876@connect.np.edu.sg",
   "BDwtsxZpmUHSnFq5VViqOGkrcZLO2HxeSZPdVyA3upYBhVghSJMNkiZX5KFX5KnrheGyLCAX8-Lh1OtLaEGWNbI",
   "dRog_7D0fmi-fMHyT9hqFQ81VZbj_PCQr7P3n0St5DY"
 );
@@ -125,7 +125,7 @@ app.get("/aws/api", async (req, res) => {
 
 app.get("/notifications/push", (req, res) => {
   const payload = JSON.stringify({
-    title: "Hello!",
+    title: "Student High Temperature Alert!",
     body: "It works.",
   });
 

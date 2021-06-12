@@ -75,7 +75,8 @@ self.addEventListener("push", (event) => {
   const data = event.data.json();
   console.log("New notification", data);
   const options = {
-    icon: "../public/icon-192x192.png",
+    icon: "./assets/icon-72x72.png",
+    badge: "./assets/icon-72x72.png",
     body: data.body,
   };
   event.waitUntil(self.registration.showNotification(data.title, options));
@@ -89,4 +90,11 @@ self.addEventListener("notificationclick", (event) => {
 
   event.notification.close();
   event.waitUntil(clients.openWindow(event.notification.data));
+});
+
+self.addEventListener("periodicsync", (event) => {
+  if (event.tag === "content-sync") {
+    console.log("Fetching news in the background!");
+    event.waitUntil(console.log("Fetching Data in the background!"));
+  }
 });

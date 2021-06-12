@@ -7,14 +7,6 @@ import LatestAttendance from "./LatestAttendance/LatestAttendance";
 import StudentMatters from "./StudentMatters/StudentMatters";
 import Classes from "./Classes/Classes";
 
-//import { displayNotification } from "../../serviceWorkerRegistration";
-
-/*const requestPermission = () => {
-  Notification.requestPermission((status) => {
-    //console.log("Notification permission status", status);
-  });
-};*/
-
 const Dashboard = () => {
   const [classes, setClasses] = useState([]);
   const [attendance, setAttendance] = useState([]);
