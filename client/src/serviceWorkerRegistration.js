@@ -139,8 +139,23 @@ async function grantPeriodic() {
   const status = await navigator.permissions.query({
     name: "periodic-background-sync",
   });
-  if (status.state === "granted") {
-    console.log("granted");
+  if (status.state === "Granted") {
+    periodicSyncFunc();
   } else {
+    console.log("Not Granted");
+  }
+}
+
+async function periodicSyncFunc() {
+  const registration = await navigator.serviceWorker.ready;
+  if ("periodicSync" in registration) {
+    try {
+      console.log("synced");
+      await registration.periodicSync.register("content-sync", {
+        minInterval: 10000,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

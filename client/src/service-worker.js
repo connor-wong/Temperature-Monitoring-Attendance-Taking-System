@@ -71,21 +71,6 @@ self.addEventListener("message", (event) => {
 });
 
 // Any other custom service worker logic can go here.
-async function periodicSyncFunc() {
-  const registration = await navigator.serviceWorker.ready;
-  if ("periodicSync" in registration) {
-    try {
-      console.log("synced");
-      await registration.periodicSync.register("content-sync", {
-        minInterval: 1000 * 60,
-      });
-      fetch("/notifications/push");
-    } catch (error) {
-      console.log(error);
-    }
-  }
-}
-
 self.addEventListener("push", (event) => {
   const data = event.data.json();
   console.log("New notification", data);
@@ -106,7 +91,9 @@ self.addEventListener("notificationclick", (event) => {
 });
 
 self.addEventListener("periodicsync", (event) => {
+  console.log("Sync Event: ", event);
   if (event.tag === "content-sync") {
-    event.waitUntil(periodicSyncFunc());
+    console.log("Data Fetching!");
+    event.waitUntil(console.log("Data Fetching!"));
   }
 });
