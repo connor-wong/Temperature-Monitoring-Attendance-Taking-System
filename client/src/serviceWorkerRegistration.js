@@ -148,7 +148,7 @@ async function grantPeriodic() {
         try {
           // Register new sync every 24 hours
           await registration.periodicSync.register("content-sync", {
-            minInterval: 24 * 60 * 60 * 1000, // 1 day
+            minInterval: 1 * 60 * 10 * 1000, // 10 minutes
           });
           console.log("Periodic background sync registered!");
         } catch (e) {

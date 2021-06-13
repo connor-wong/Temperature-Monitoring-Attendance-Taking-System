@@ -94,7 +94,7 @@ self.addEventListener("notificationclick", (event) => {
 
 self.addEventListener("periodicsync", (event) => {
   if (event.tag === "content-sync") {
-    console.log("Fetching news in the background!");
-    event.waitUntil(console.log("Fetching Data in the background!"));
+    console.log("Notification Test In The Background!");
+    event.waitUntil(fetch("/notifications/push"));
   }
 });
