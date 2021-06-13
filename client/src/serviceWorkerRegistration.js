@@ -136,25 +136,11 @@ export function unregister() {
 }
 
 async function grantPeriodic() {
-  if ("serviceWorker" in navigator) {
-    const registration = await navigator.serviceWorker.ready;
-    // Check if periodicSync is supported
-    if ("periodicSync" in registration) {
-      // Request permission
-      const status = await navigator.permissions.query({
-        name: "periodic-background-sync",
-      });
-      if (status.state === "granted") {
-        try {
-          // Register new sync every 24 hours
-          await registration.periodicSync.register("content-sync", {
-            minInterval: 1 * 60 * 10 * 1000, // 10 minutes
-          });
-          console.log("Periodic background sync registered!");
-        } catch (e) {
-          console.error(`Periodic background sync failed:\n${e}`);
-        }
-      }
-    }
+  const status = await navigator.permissions.query({
+    name: "periodic-background-sync",
+  });
+  if (status.state === "granted") {
+    console.log("granted");
+  } else {
   }
 }
