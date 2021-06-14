@@ -90,10 +90,10 @@ self.addEventListener("notificationclick", (event) => {
   event.waitUntil(clients.openWindow(event.notification.data));
 });
 
-self.addEventListener("periodicsync", (event) => {
-  console.log("Sync Event: ", event);
-  if (event.tag === "content-sync") {
-    console.log("Data Fetching!");
-    event.waitUntil(console.log("Data Fetching!"));
-  }
-});
+// self.addEventListener("periodicsync", (event) => {
+//   console.log("Sync Event: ", event);
+//   if (event.tag === "content-sync") {
+//     console.log("Data Fetching!");
+//     event.waitUntil(console.log("Data Fetching!"));
+//   }
+// });

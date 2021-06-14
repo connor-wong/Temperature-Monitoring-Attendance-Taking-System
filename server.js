@@ -8,6 +8,7 @@ const AWS = require("aws-sdk");
 require("dotenv").config();
 const bodyParser = require("body-parser");
 const webpush = require("web-push");
+const cron = require("node-cron");
 
 const PORT = process.env.PORT || 8000; // default port to listen
 
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname, "client", "build")));
 
+// Web Push Configuration
 webpush.setVapidDetails(
   "mailto: s10197876@connect.np.edu.sg",
   "BDwtsxZpmUHSnFq5VViqOGkrcZLO2HxeSZPdVyA3upYBhVghSJMNkiZX5KFX5KnrheGyLCAX8-Lh1OtLaEGWNbI",
@@ -50,6 +52,19 @@ var sheetId = "";
 var userEmail = "";
 var classTitle = "";
 var subscription = "";
+
+// Cron Job
+cron.schedule("* * * * 1,2,3,4,5", () => {
+  const payload = JSON.stringify({
+    title: "Student High Temperature Alert!",
+    body: "It works.",
+  });
+
+  webpush
+    .sendNotification(subscription, payload)
+    .then((result) => console.log(result))
+    .catch((e) => console.log(e.stack));
+});
 
 // Handle GET requests
 // Classes.js Component
