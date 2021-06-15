@@ -1,23 +1,31 @@
-// server/index.js
+// server
 const express = require("express");
 const app = express();
 const path = require("path");
 const cors = require("cors");
 const { google } = require("googleapis");
 const AWS = require("aws-sdk");
-require("dotenv").config();
-const bodyParser = require("body-parser");
 const webpush = require("web-push");
 const cron = require("node-cron");
+require("dotenv").config();
 
 const PORT = process.env.PORT || 8000; // default port to listen
 
 app.use(cors());
-app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname, "client", "build")));
+
+// Variables
+var sheetId = "";
+var userEmail = "";
+var classTitle = "";
+var classArray = [];
+var subscription = "";
+var describeData = "";
+var shardIterObj = "";
+var setHours = 23;
 
 // Web Push Configuration
 webpush.setVapidDetails(
@@ -44,26 +52,135 @@ AWS.config.update({
   secretAccessKey: "lXTj/NUkQFOn/kcLhw7c1gkFSZpSI1IV2huow00T",
 });
 
+// DynamoDB
 const dynamodbClient = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME = "March";
 
-// Variables
-var sheetId = "";
-var userEmail = "";
-var classTitle = "";
-var subscription = "";
+// DynamoDB Stream
+const dynamodbstreams = new AWS.DynamoDBStreams();
 
-// Cron Job
-cron.schedule("* * * * 1,2,3,4,5", () => {
-  const payload = JSON.stringify({
-    title: "Student High Temperature Alert!",
-    body: "It works.",
+const describeStream = () => {
+  const params = {
+    StreamArn:
+      "arn:aws:dynamodb:ap-southeast-1:386312977062:table/March/stream/2021-06-13T13:24:55.722",
+  };
+
+  return new Promise((resolve, reject) => {
+    dynamodbstreams.describeStream(params, function (err, data) {
+      if (err) reject(err);
+      // an error occurred
+      else resolve(data);
+    });
   });
+};
 
-  webpush
-    .sendNotification(subscription, payload)
-    .then((result) => console.log(result))
-    .catch((e) => console.log(e.stack));
+const getDBStreamRecords = (params) => {
+  return new Promise((resolve, reject) => {
+    dynamodbstreams.getRecords(params, function (err, data) {
+      if (err) reject(err, err.stack);
+      else resolve(data);
+    });
+  });
+};
+
+const getDBStreamShardIterator = (latestShard) => {
+  const params = {
+    ShardId: latestShard,
+    ShardIteratorType: "LATEST",
+    StreamArn:
+      "arn:aws:dynamodb:ap-southeast-1:386312977062:table/March/stream/2021-06-13T13:24:55.722",
+  };
+
+  return new Promise((resolve, reject) => {
+    dynamodbstreams.getShardIterator(params, function (err, data) {
+      if (err) reject(err);
+      // an error occurred
+      else resolve(data);
+    });
+  });
+};
+
+// const getDBStreamARNs = () => {
+//   const params = {
+//     TableName: TABLE_NAME,
+//   };
+
+//   return new Promise((resolve, reject) => {
+//     dynamodbstreams.listStreams(params, function (err, data) {
+//       if (err) reject(err, err.stack);
+//       else resolve(data);
+//     });
+//   });
+// };
+
+// Cron Schdules
+// Create New ShardIterator Between 8am - 5pm
+cron.schedule(`10 ${setHours} * * 1,2,3,4,5`, async () => {
+  describeData = await describeStream();
+
+  let latestShard =
+    describeData.StreamDescription.Shards[
+      describeData.StreamDescription.Shards.length - 1
+    ];
+
+  shardIterObj = await getDBStreamShardIterator(latestShard.ShardId);
+  //console.log("Shard Created");
+  //console.log("Shards: ", describeData.StreamDescription.Shards);
+  //console.log("ShardIterator: ", shardIterObj);
+
+  // if (setHours > 17) {
+  //   setHours = 8;
+  // } else {
+  //   setHours = setHours + 1;
+  // }
+});
+
+cron.schedule(`15 ${setHours} * * 1,2,3,4,5`, async () => {
+  let data = await getDBStreamRecords(shardIterObj);
+  let records = data.Records;
+  let notificationContent = [];
+
+  //console.log("Records", data.Records);
+
+  //Filter INSERT Event & High Temperature Only
+  let highTempList = records.filter(
+    (record) =>
+      record.eventName === "INSERT" &&
+      JSON.parse(Object.values(record.dynamodb.NewImage.Temperature)) > 37.4 &&
+      classArray.includes(Object.values(record.dynamodb.NewImage.Class).join())
+  );
+
+  if (highTempList) {
+    highTempList.forEach((record) => {
+      let student = Object.values(record.dynamodb.NewImage);
+      notificationContent.push({
+        Class: Object.values(student[0]).join(),
+        Date: Object.values(student[1]).join(),
+        Name: Object.values(student[2]).join(),
+        id: Object.values(student[3]).join(),
+        temperature: Object.values(student[4]).join(),
+      });
+    });
+
+    notificationContent.forEach((student) => {
+      const payload = JSON.stringify({
+        title: "Student High Temperature Alert!",
+        body:
+          student.Class +
+          " " +
+          student.Name +
+          " " +
+          student.id +
+          " " +
+          student.Temperature +
+          "°C",
+      });
+      webpush
+        .sendNotification(subscription, payload)
+        .then((result) => console.log(result))
+        .catch((e) => console.log(e.stack));
+    });
+  }
 });
 
 // Handle GET requests
@@ -155,8 +272,14 @@ app.post("/sheet/class", async (req, res) => {
   try {
     const data = await Object.keys(req.body);
     classTitle = data[0];
+
+    if (!classArray.includes(classTitle)) {
+      classArray.push(classTitle);
+    }
+
     req.setTimeout(0);
     res.send(classTitle);
+    console.log(classArray);
   } catch (error) {
     console.log(error);
   }

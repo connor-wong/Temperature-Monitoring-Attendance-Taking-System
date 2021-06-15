@@ -11,7 +11,6 @@ ReactDOM.render(
   <Account>
     <App />
   </Account>,
-
   document.getElementById("root")
 );
 
