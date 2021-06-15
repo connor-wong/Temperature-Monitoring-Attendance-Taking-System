@@ -25,7 +25,7 @@ var classArray = [];
 var subscription = "";
 var describeData = "";
 var shardIterObj = "";
-var setHours = 23;
+var setHours = 15;
 
 // Web Push Configuration
 webpush.setVapidDetails(
@@ -115,7 +115,7 @@ const getDBStreamShardIterator = (latestShard) => {
 
 // Cron Schdules
 // Create New ShardIterator Between 8am - 5pm
-cron.schedule(`10 ${setHours} * * 1,2,3,4,5`, async () => {
+cron.schedule(`30 ${setHours} * * 1,2,3,4,5`, async () => {
   describeData = await describeStream();
 
   let latestShard =
@@ -124,7 +124,7 @@ cron.schedule(`10 ${setHours} * * 1,2,3,4,5`, async () => {
     ];
 
   shardIterObj = await getDBStreamShardIterator(latestShard.ShardId);
-  //console.log("Shard Created");
+  console.log("Shard Created");
   //console.log("Shards: ", describeData.StreamDescription.Shards);
   //console.log("ShardIterator: ", shardIterObj);
 
@@ -135,7 +135,7 @@ cron.schedule(`10 ${setHours} * * 1,2,3,4,5`, async () => {
   // }
 });
 
-cron.schedule(`15 ${setHours} * * 1,2,3,4,5`, async () => {
+cron.schedule(`35 ${setHours} * * 1,2,3,4,5`, async () => {
   let data = await getDBStreamRecords(shardIterObj);
   let records = data.Records;
   let notificationContent = [];
