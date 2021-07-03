@@ -115,7 +115,7 @@ const getDBStreamShardIterator = (latestShard) => {
 
 // Cron Schdules
 // Create New ShardIterator Between 8am - 5pm
-cron.schedule(`25 ${setHours} * * 1,2,3,4,5,6`, async () => {
+cron.schedule(`42 ${setHours} * * 1,2,3,4,5,6`, async () => {
   describeData = await describeStream();
 
   let latestShard =
@@ -135,12 +135,12 @@ cron.schedule(`25 ${setHours} * * 1,2,3,4,5,6`, async () => {
   // }
 });
 
-cron.schedule(`28 ${setHours} * * 1,2,3,4,5,6`, async () => {
+cron.schedule(`45 ${setHours} * * 1,2,3,4,5,6`, async () => {
   let data = await getDBStreamRecords(shardIterObj);
   let records = data.Records;
   let notificationContent = [];
 
-  //console.log("Records", data.Records);
+  console.log("Records", data.Records);
 
   //Filter INSERT Event & High Temperature Only
   let highTempList = records.filter(
