@@ -18,7 +18,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (updateData) {
       getData();
-      //fetch("/notifications/push");
+      fetch("/notifications/push");
     }
   }, [updateData]);
 
@@ -33,9 +33,9 @@ const Dashboard = () => {
     let lowAttendanceMatter = [];
     let absentArray = [];
 
-    await fetch("/drive/api");
+    await fetch("/drive/api"); // Get sheetID
 
-    await fetch("/sheet/api")
+    await fetch("/sheet/api") // Get All Classes
       .then((res) => res.json())
       .then((res) => {
         classes = res.sheets;

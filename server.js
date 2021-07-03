@@ -114,6 +114,7 @@ const getDBStreamShardIterator = (latestShard) => {
 // };
 
 // Cron Schdules
+
 // Create New ShardIterator Between 8am - 5pm
 cron.schedule(`30 ${setHours} * * 1,2,3,4,5`, async () => {
   describeData = await describeStream();
@@ -256,9 +257,11 @@ app.get("/aws/api", async (req, res) => {
 });
 
 app.get("/notifications/push", (req, res) => {
+  let tempValue = 37.8;
+  let message = "Temperature Test";
   const payload = JSON.stringify({
     title: "Student High Temperature Alert!",
-    body: "It works.",
+    body: message + " " + tempValue + "°C",
   });
 
   webpush
@@ -279,7 +282,6 @@ app.post("/sheet/class", async (req, res) => {
 
     req.setTimeout(0);
     res.send(classTitle);
-    console.log(classArray);
   } catch (error) {
     console.log(error);
   }
