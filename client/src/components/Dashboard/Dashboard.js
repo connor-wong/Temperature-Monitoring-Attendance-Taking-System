@@ -19,6 +19,7 @@ const Dashboard = () => {
     if (updateData) {
       getData();
       fetch("/notifications/push");
+      console.log("Notification");
     }
   }, [updateData]);
 
