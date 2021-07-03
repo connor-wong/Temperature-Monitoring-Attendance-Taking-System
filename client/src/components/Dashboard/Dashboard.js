@@ -18,8 +18,6 @@ const Dashboard = () => {
   useEffect(() => {
     if (updateData) {
       getData();
-      fetch("/notifications/push");
-      console.log("Notification");
     }
   }, [updateData]);
 
