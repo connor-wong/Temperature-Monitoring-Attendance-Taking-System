@@ -25,7 +25,9 @@ var classArray = [];
 var subscription = "";
 var describeData = "";
 var shardIterObj = "";
-var setHours = 14;
+var setHours = 15;
+var setMinShard = 0;
+var setMinNoti = 5;
 
 // Web Push Configuration
 webpush.setVapidDetails(
@@ -115,7 +117,7 @@ const getDBStreamShardIterator = (latestShard) => {
 
 // Cron Schdules
 // Create New ShardIterator Between 8am - 5pm
-cron.schedule(`42 ${setHours} * * 1,2,3,4,5,6`, async () => {
+cron.schedule(`${setMinShard} ${setHours} * * 1,2,3,4,5,6`, async () => {
   describeData = await describeStream();
 
   let latestShard =
@@ -133,9 +135,11 @@ cron.schedule(`42 ${setHours} * * 1,2,3,4,5,6`, async () => {
   // } else {
   //   setHours = setHours + 1;
   // }
+
+  setMinShard = setMinShard + 15;
 });
 
-cron.schedule(`45 ${setHours} * * 1,2,3,4,5,6`, async () => {
+cron.schedule(`${setMinNoti} ${setHours} * * 1,2,3,4,5,6`, async () => {
   let data = await getDBStreamRecords(shardIterObj);
   let records = data.Records;
   let notificationContent = [];
@@ -149,6 +153,8 @@ cron.schedule(`45 ${setHours} * * 1,2,3,4,5,6`, async () => {
       JSON.parse(Object.values(record.dynamodb.NewImage.Temperature)) > 37.4 &&
       classArray.includes(Object.values(record.dynamodb.NewImage.Class).join())
   );
+
+  console.log(highTempList);
 
   if (highTempList) {
     highTempList.forEach((record) => {
@@ -181,6 +187,8 @@ cron.schedule(`45 ${setHours} * * 1,2,3,4,5,6`, async () => {
         .catch((e) => console.log(e.stack));
     });
   }
+
+  setMinNoti = setMinNoti + 5;
 });
 
 // Handle GET requests
@@ -299,7 +307,7 @@ app.post("/drive/email", async (req, res) => {
 
 app.post("/notifications/subscribe", (req, res) => {
   subscription = req.body;
-
+  console.log(subscription);
   res.status(200).json({ success: true });
 });
 
