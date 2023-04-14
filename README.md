@@ -1,4 +1,4 @@
-# Temperature Monitoring Attendance Taking System
+# RaspiTAR Temperature Monitoring Attendance Taking System
 Web application for final year project @ Ngee Ann Polytechnic
 
 This project started off as one of the components of the final year project. It aims to provide lecturers the convenience of accessing student's information through the web application.  
